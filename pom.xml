@@ -1,45 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.6</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>jib-demo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>jib-demo</name>
-	<description>Demo project for Spring Boot with Jib</description>
-	<properties>
-		<java.version>11</java.version>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <groupId>com.example</groupId>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <artifactId>jib-demo</artifactId>
+    <version>1.0.1</version>
+    <name>jib-demo</name>
+    <description>Use Jib to build Spring Boot Demo container image</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>11</java.version>
+        <start-class>com.example.jibdemo.JibDemoApplication</start-class>
+    </properties>
 
+    <profiles>
+        <profile>
+            <id>amazonlambda</id>
+            <properties>
+                <base.image.registry>public.ecr.aws</base.image.registry>
+                <base.image.repository>lambda</base.image.repository>
+                <image.name>java</image.name>
+                <image.tag>11-x86_64</image.tag>
+            </properties>
+        </profile>
+        <profile>
+            <id>amazoncorretto</id>
+            <properties>
+                <base.image.registry>public.ecr.aws</base.image.registry>
+                <base.image.repository>amazoncorretto</base.image.repository>
+                <image.name>amazoncorretto</image.name>
+                <image.tag>11-arm64</image.tag>
+            </properties>
+        </profile>
+        <profile>
+            <id>distroless</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <base.image.registry>gcr.io</base.image.registry>
+                <base.image.repository>distroless</base.image.repository>
+                <image.name>java</image.name>
+                <image.tag>11</image.tag>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.1.4</version>
+                <configuration>
+                    <from>
+                        <image>
+                            ${base.image.registry}/${base.image.repository}/${image.name}:${image.tag}
+                        </image>
+                        <!--
+                        <platforms>
+                          <platform>
+                            <architecture>arm64</architecture>
+                            <os>linux</os>
+                          </platform>
+                          <platform>
+                            <architecture>amd64</architecture>
+                            <os>linux</os>
+                          </platform>
+                        </platforms>
+                        -->
+                    </from>
+                    <to>
+                        <image>${project.artifactId}:v${project.version}-${base.image.repository}-${image.name}-${image.tag}</image>
+                    </to>
+                    <outputPaths>
+                        <tar>${project.artifactId}-${base.image.repository}-${image.tag}.tar</tar>
+                    </outputPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
