@@ -1,4 +1,5 @@
 [![build](https://github.com/ptorre/spring-boot-jib/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/ptorre/spring-boot-jib/actions/workflows/build.yml)
+[![Publish release to container registry](https://github.com/ptorre/spring-boot-jib/actions/workflows/release.yml/badge.svg)](https://github.com/ptorre/spring-boot-jib/actions/workflows/release.yml)
 
 # spring-boot-jib
 
