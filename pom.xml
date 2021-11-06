@@ -28,7 +28,7 @@
             <properties>
                 <base.image.registry>public.ecr.aws</base.image.registry>
                 <base.image.repository>lambda</base.image.repository>
-                <image.name>java</image.name>
+                <base.image.name>java</base.image.name>
                 <image.tag>11-x86_64</image.tag>
             </properties>
         </profile>
@@ -37,7 +37,7 @@
             <properties>
                 <base.image.registry>public.ecr.aws</base.image.registry>
                 <base.image.repository>amazoncorretto</base.image.repository>
-                <image.name>amazoncorretto</image.name>
+                <base.image.name>amazoncorretto</base.image.name>
                 <image.tag>11-arm64</image.tag>
             </properties>
         </profile>
@@ -49,7 +49,7 @@
             <properties>
                 <base.image.registry>gcr.io</base.image.registry>
                 <base.image.repository>distroless</base.image.repository>
-                <image.name>java</image.name>
+                <base.image.name>java</base.image.name>
                 <image.tag>11</image.tag>
             </properties>
         </profile>
@@ -85,7 +85,7 @@
                 <configuration>
                     <from>
                         <image>
-                            ${base.image.registry}/${base.image.repository}/${image.name}:${image.tag}
+                            ${base.image.registry}/${base.image.repository}/${base.image.name}:${image.tag}
                         </image>
                         <!--
                         <platforms>
@@ -101,7 +101,7 @@
                         -->
                     </from>
                     <to>
-                        <image>${project.artifactId}:v${project.version}-${base.image.repository}-${image.name}-${image.tag}</image>
+                        <image>${project.artifactId}:v${project.version}-${base.image.repository}-${base.image.name}-${image.tag}</image>
                     </to>
                     <outputPaths>
                         <tar>${project.artifactId}-${base.image.repository}-${image.tag}.tar</tar>
